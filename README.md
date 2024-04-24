@@ -12,7 +12,7 @@ go get github.com/latte-soft/discord-webhooks-go
 
 ## Example
 
-To run from cloning the reporitory (replacing with your own Discord Webhook URL and token): `go run ./examples/basic "https://discord.com/api/webhooks/123/1234567890"`
+To run from cloning the repository (replacing with your own Discord Webhook URL and token): `go run ./examples/basic "https://discord.com/api/webhooks/123/1234567890"`
 
 [examples/basic/main.go](examples/basic/main.go)
 

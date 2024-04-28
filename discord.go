@@ -262,6 +262,10 @@ func EditMessage(webhookUrl string, messageId string, message *Message) (err err
 
 	defer resp.Body.Close()
 
+	if resp.StatusCode != 204 {
+		return errors.New("Bad Discord response (Expected status code 204, got " + fmt.Sprint(resp.StatusCode) + ")")
+	}
+
 	return nil
 }
 

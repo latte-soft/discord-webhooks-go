@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	_ "embed"
 	"encoding/binary"
 	"fmt"
 	"image"
@@ -13,6 +14,9 @@ import (
 	"github.com/latte-soft/discord-webhooks-go"
 )
 
+//go:embed buildit.png
+var imgData []byte
+
 func main() {
 	args := os.Args
 	argsLen := len(args)
@@ -23,19 +27,10 @@ func main() {
 
 	webhookUrl := args[1]
 
-	data, err := os.ReadFile("examples/basic/buildit.png")
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	img, _, _ := image.Decode(bytes.NewReader(data))
-	c := dominantcolor.Find(img)
-	embedColor := binary.BigEndian.Uint32([]byte{0, c.R, c.G, c.B})
-
 	messageId, err := discord.PostMessage(webhookUrl, &discord.Message{
 		Embeds: &[]discord.Embed{
 			{
-				Color: embedColor,
+				Color: GetMainColorOfImg(&imgData), // 0xFFFFFF etc
 
 				Author: &discord.EmbedAuthor{
 					Name: "Author",
@@ -72,7 +67,7 @@ func main() {
 		Files: &[]discord.File{
 			{
 				Name: "buildit.png",
-				Data: &data,
+				Data: &imgData,
 			},
 		},
 	})
@@ -82,4 +77,11 @@ func main() {
 	}
 
 	log.Println(*messageId)
+}
+
+func GetMainColorOfImg(imgData *[]byte) uint32 {
+	img, _, _ := image.Decode(bytes.NewReader(*imgData))
+	c := dominantcolor.Find(img)
+
+	return binary.BigEndian.Uint32([]byte{0, c.R, c.G, c.B})
 }

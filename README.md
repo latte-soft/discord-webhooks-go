@@ -12,99 +12,14 @@ go get github.com/latte-soft/discord-webhooks-go
 
 ## Example
 
-To run from cloning the repository (replacing with your own Discord Webhook URL and token): `go run ./examples/basic "https://discord.com/api/webhooks/123/1234567890"`
+To run the full example (replacing with your own Discord Webhook URL and token):
+```
+go run github.com/latte-soft/discord-webhooks-go/_examples/full "https://discord.com/api/webhooks/123/1234567890"
+```
 
-[examples/basic/main.go](examples/basic/main.go)
+See for examples usage: [_examples/full/main.go](_examples/full/main.go)
 
 ![Screenshot of example below](repo-assets/example-screenshot.png)
-
-```go
-package main
-
-import (
-	"bytes"
-	"encoding/binary"
-	"fmt"
-	"image"
-	"log"
-	"os"
-	"time"
-
-	"github.com/cenkalti/dominantcolor"
-	"github.com/latte-soft/discord-webhooks-go"
-)
-
-func main() {
-	args := os.Args
-	argsLen := len(args)
-	if argsLen < 2 || argsLen > 2 {
-		fmt.Printf("USAGE: %s <WEBHOOK_URL>", args[0])
-		os.Exit(1)
-	}
-
-	webhookUrl := args[1]
-
-	data, err := os.ReadFile("examples/basic/buildit.png")
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	img, _, _ := image.Decode(bytes.NewReader(data))
-	c := dominantcolor.Find(img)
-	embedColor := binary.BigEndian.Uint32([]byte{0, c.R, c.G, c.B})
-
-	messageId, err := discord.PostMessage(webhookUrl, &discord.Message{
-		Embeds: &[]discord.Embed{
-			{
-				Color: embedColor,
-
-				Author: &discord.EmbedAuthor{
-					Name: "Author",
-				},
-
-				Title: "Title",
-				Url:   "https://example.org",
-
-				Fields: &[]discord.EmbedField{
-					{
-						Name:   "A field",
-						Value:  "A value",
-						Inline: true,
-					},
-					{
-						Name:   "Another field",
-						Value:  "Another value",
-						Inline: true,
-					},
-				},
-
-				Image: &discord.EmbedImage{
-					Url: "attachment://buildit.png",
-				},
-
-				Footer: &discord.EmbedFooter{
-					Text: "Footer",
-				},
-
-				Timestamp: time.Now().UTC().Format(time.RFC3339),
-			},
-		},
-
-		Files: &[]discord.File{
-			{
-				Name: "buildit.png",
-				Data: &data,
-			},
-		},
-	})
-
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	log.Println(*messageId)
-}
-```
 
 ## License
 

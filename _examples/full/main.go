@@ -1,16 +1,12 @@
 package main
 
 import (
-	"bytes"
 	_ "embed"
-	"encoding/binary"
 	"fmt"
-	"image"
 	"log"
 	"os"
 	"time"
 
-	"github.com/cenkalti/dominantcolor"
 	"github.com/latte-soft/discord-webhooks-go"
 )
 
@@ -21,7 +17,7 @@ func main() {
 	args := os.Args
 	argsLen := len(args)
 	if argsLen < 2 || argsLen > 2 {
-		fmt.Printf("USAGE: %s <WEBHOOK_URL>", args[0])
+		fmt.Printf("USAGE: %s <WEBHOOK_URL>\n", args[0])
 		os.Exit(1)
 	}
 
@@ -30,7 +26,7 @@ func main() {
 	messageId, err := discord.PostMessage(webhookUrl, &discord.Message{
 		Embeds: &[]discord.Embed{
 			{
-				Color: GetMainColorOfImg(&imgData), // 0xFFFFFF etc
+				Color: 0x176d34,
 
 				Author: &discord.EmbedAuthor{
 					Name: "Author",
@@ -77,11 +73,4 @@ func main() {
 	}
 
 	log.Println(*messageId)
-}
-
-func GetMainColorOfImg(imgData *[]byte) uint32 {
-	img, _, _ := image.Decode(bytes.NewReader(*imgData))
-	c := dominantcolor.Find(img)
-
-	return binary.BigEndian.Uint32([]byte{0, c.R, c.G, c.B})
 }
